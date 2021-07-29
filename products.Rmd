@@ -1,0 +1,108 @@
+---
+title: <center> <h1>  PRODUCT WISE DETAILS </h1> </center>
+author: "Omer Sharif"
+date: "7/27/2021"
+output: 
+ rmarkdown::html_document:
+  theme: journal
+  toc: true
+  toc_float: true
+  highlight: tango
+  number_sections: false
+    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(ggthemes)
+library(dplyr)
+library(viridis)
+library(DT)
+library(readxl)
+
+# Induct In Ethanol Excel Sheet
+Main <- read_excel("C:/Users/omer.sharif/Desktop/Office Computer/Capstone/R Codes/Ethanol Dashboard/Jun 2021/Main.xlsm")
+
+```
+
+
+# INTERACTIVE REPORT
+
+### * `Box Plot`
+
+* Hover of the mouse on _"Outliers"_ highlights _"Prices"_ and mouse hover on Box itself highlights _"Minimum and Maximum Prices"_ and _"Inter Quartile Ranges"_,
+* `Colours` represent different _Products_.
+* Box Plot is a tool used to investigate range of data (maximum and minimum value)
+
+```{r,echo=FALSE,fig.align='left',fig.width=10,fig.height=6}
+Product <- as.factor(Main$Product)
+REGION <- as.factor(Main$REGION)
+p <- ggplot(data=Main,aes(x=Product,y=`M.Ton Price`,colour=Product))
+p <- p + geom_boxplot() + guides(fill="none") + scale_fill_viridis() + coord_flip()
+p <- p + theme(legend.position = "", plot.title=element_text(hjust=0.5))+labs(x="",y="",title="") + facet_grid(.~REGION,scales="free") 
+p <- ggplotly(p) 
+hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALSE)
+
+
+```
+
+### * `Histogram`
+
+* Hover of the mouse shows _"Frequency","Price Bins" and "Product"_.
+
+* Drag the mouse over a section of the graph to zoom in and Double click to zoom out. 
+
+* The **Histogram** tool is a method that uses bars (or rectangles) to represent the distribution (such as the frequency, percentage, or proportion) of data by placing each data value in an appropriate class interval. It is useful for examining the spread of the data set.
+
+```{r,echo=FALSE,fig.align='center',fig.width=9,fig.height=8}
+Year <- as.factor(Main$Year)
+Product <- as.factor(Main$Product)
+
+p <- ggplot(data=Main,aes(x=`M.Ton Price`,colour= Product))
+p <- p + geom_histogram(alpha = 0.2,bins=50) + facet_grid(Product~., scales = "free") + 
+  theme (legend.position = "") + labs(x="",y="")
+p <- p + scale_fill_viridis_d() 
+p <- ggplotly(p) 
+hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALSE)
+
+```
+
+### * `Time Series Plot`
+
+```{r products,echo=FALSE,fig.align='right',fig.width=15,fig.height=8}
+
+REGION <- as.factor(Main$REGION)
+p <- ggplot(data=Main,aes(x= DATE ,y=`M.Ton Price`,colour=REGION))
+p <- p + geom_point(alpha=0.3) + geom_jitter(alpha=0.3) +
+  theme(legend.position = "top",plot.title=element_text(hjust=0.5)) + labs(title="",x="",y="")
+p <- p + facet_grid(.~Product) + scale_fill_viridis_d() + guides(fill="none") 
+p 
+
+#<- ggplotly(p) 
+#hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALSE) 
+```
+
+### DATA SUMMARY BY YEAR
+
+* Table is a summary of prices based on _Year_ basis.
+* `Maximum` and `Minimum` prices are grouped for one _"product"_ within a _"region"_ for that **year** for multiple _"Obs"_ observations. For example, in year 2021 for product _ENA 96%_ in Asia there are `522` observations. There is no other case of _ENA 96%_ in year 2021 for Asia.
+* Each record in the table below is unique in such a way
+
+
+```{r,message= FALSE}
+Product_count <- Main %>% group_by(Year,Product,REGION) %>%
+summarise(Obs=n(),`Maximum Price`= round(max(`M.Ton Price`),2),`Minimum Price`=round(min(`M.Ton Price`),2))
+Product_count <- Product_count %>% arrange(desc(Year),desc(Product))
+
+datatable(Product_count)
+
+```
+
+
+
+
+
+
