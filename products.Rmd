@@ -79,7 +79,7 @@ REGION <- as.factor(Main$REGION)
 
 p <- ggplot(data=Main,aes(x=`M.Ton Price`,y=..count..,colour= Product))
 p <- p + geom_histogram(alpha = 0.2,bins=30) + facet_grid(Product~REGION) + 
-  theme (legend.position = "") + labs(x="",y="") 
+  theme (legend.position = "",text= element_text(size=9)) + labs(x="",y="") 
 p <- p + scale_fill_viridis_d() 
 p <- ggplotly(p,tooltip=c("y")) 
 hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALSE)
@@ -91,11 +91,10 @@ hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALS
 * Below are price _regression lines_ of all products. Aids the eye in seeing **patterns** in the presence of over plotting.  
 * Drag the mouse over a section of the graph to _"zoom in"_ and **Double Click** to zoom out.
 
-```{r regressionplot,echo=FALSE,fig.align='right',fig.width=10,fig.height=6}
-p <- ggplot(data=Main,aes(x=DATE,y=`M.Ton Price`,colour=Product)) + geom_jitter(alpha=0.5) + geom_smooth(method = "lm", formula = y ~ splines::bs(x, 3),se=FALSE,size=1,color="black") + facet_grid(Product~.) + labs(x="",y="")
+```{r regressionplot,echo=FALSE,fig.align='right',fig.width=10,fig.height=7}
+p <- ggplot(data=Main,aes(x=DATE,y=`M.Ton Price`)) + geom_jitter(alpha=0.2) + geom_smooth(method = "lm", formula = y ~ splines::bs(x, 3),se=FALSE,size=1) + facet_grid(Product~.) + labs(x="",y="") + theme(text= element_text(size=9))
 p <- ggplotly(p,tooltip="y")
 hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALSE)
-
 
 ```
 
