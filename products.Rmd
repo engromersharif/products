@@ -1,5 +1,5 @@
 ---
-title: <center> <h1>  PRODUCT WISE DETAILS </h1> </center>
+title: PRODUCT WISE DETAILS 
 knit: (function(input_file, encoding) {
   out_dir <- 'docs';
   rmarkdown::render(input_file,
@@ -34,9 +34,12 @@ Main <- read_excel("C:/Users/omer.sharif/Desktop/Office Computer/Capstone/R Code
 ```
 
 
-```{r echo=FALSE,out.width='100%'}
+```{r echo=FALSE,out.width='70%',fig.align='center'}
+
 
 knitr::include_graphics('./img/logo.jpg')
+
+
 
 ```
 
@@ -49,7 +52,7 @@ knitr::include_graphics('./img/logo.jpg')
 * `Colours` represent different _Products_.
 * Box Plot is a tool used to investigate range of data (maximum and minimum value)
 
-```{r,echo=FALSE,fig.align='left',fig.width=10,fig.height=6}
+```{r,echo=FALSE,fig.align='right',fig.width=10,fig.height=6}
 Product <- as.factor(Main$Product)
 REGION <- as.factor(Main$REGION)
 p <- ggplot(data=Main,aes(x=Product,y=`M.Ton Price`,colour=Product))
@@ -69,26 +72,41 @@ hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALS
 
 * The **Histogram** tool is a method that uses bars (or rectangles) to represent the distribution (such as the frequency, percentage, or proportion) of data by placing each data value in an appropriate class interval. It is useful for examining the spread of the data set.
 
-```{r,echo=FALSE,fig.align='center',fig.width=9,fig.height=8}
+```{r,echo=FALSE,fig.align='right',fig.width=10,fig.height=7}
 Year <- as.factor(Main$Year)
 Product <- as.factor(Main$Product)
+REGION <- as.factor(Main$REGION)
 
-p <- ggplot(data=Main,aes(x=`M.Ton Price`,colour= Product))
-p <- p + geom_histogram(alpha = 0.2,bins=50) + facet_grid(Product~., scales = "free") + 
-  theme (legend.position = "") + labs(x="",y="")
+p <- ggplot(data=Main,aes(x=`M.Ton Price`,y=..count..,colour= Product))
+p <- p + geom_histogram(alpha = 0.2,bins=30) + facet_grid(Product~REGION, scales = "free_y") + 
+  theme (legend.position = "") + labs(x="",y="") 
 p <- p + scale_fill_viridis_d() 
-p <- ggplotly(p) 
+p <- ggplotly(p,tooltip=c("y")) 
 hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALSE)
 
 ```
 
+### * `Interactive Time Series Plot`
+
+* Below are price _regression lines_ of all products. Aids the eye in seeing **patterns** in the presence of over plotting.  
+
+```{r regressionplot,echo=FALSE,fig.align='right',fig.width=10,fig.height=6}
+p <- ggplot(data=Main,aes(x=DATE,y=`M.Ton Price`,colour=Product)) + geom_jitter(alpha=0.1) + geom_smooth(method = "lm", formula = y ~ splines::bs(x, 3),se=FALSE)
+p <- ggplotly(p)
+hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALSE)
+
+
+```
+
+
+
 ### * `Time Series Plot`
 
-```{r products,echo=FALSE,fig.align='right',fig.width=15,fig.height=8}
+```{r static,echo=FALSE,fig.align='right',fig.width=15,fig.height=8}
 
 REGION <- as.factor(Main$REGION)
 p <- ggplot(data=Main,aes(x= DATE ,y=`M.Ton Price`,colour=REGION))
-p <- p + geom_point(alpha=0.3) + geom_jitter(alpha=0.3) +
+p <- p + geom_point(alpha=0.8) + geom_jitter(alpha=0.8) +
   theme(legend.position = "top",plot.title=element_text(hjust=0.5)) + labs(title="",x="",y="")
 p <- p + facet_grid(.~Product) + scale_fill_viridis_d() + guides(fill="none") 
 p 
