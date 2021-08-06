@@ -89,10 +89,11 @@ hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALS
 ### * `Interactive Time Series Plot`
 
 * Below are price _regression lines_ of all products. Aids the eye in seeing **patterns** in the presence of over plotting.  
+* Drag the mouse over a section of the graph to _"zoom in"_ and **Double Click** to zoom out.
 
 ```{r regressionplot,echo=FALSE,fig.align='right',fig.width=10,fig.height=6}
-p <- ggplot(data=Main,aes(x=DATE,y=`M.Ton Price`,colour=Product)) + geom_jitter(alpha=0.1) + geom_smooth(method = "lm", formula = y ~ splines::bs(x, 3),se=FALSE)
-p <- ggplotly(p)
+p <- ggplot(data=Main,aes(x=DATE,y=`M.Ton Price`,colour=Product)) + geom_jitter(alpha=0.5) + geom_smooth(method = "lm", formula = y ~ splines::bs(x, 3),se=FALSE,size=1,color="black") + facet_grid(Product~.) + labs(x="",y="")
+p <- ggplotly(p,tooltip="y")
 hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALSE)
 
 
