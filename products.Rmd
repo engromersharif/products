@@ -57,7 +57,7 @@ Product <- as.factor(Main$Product)
 REGION <- as.factor(Main$REGION)
 p <- ggplot(data=Main,aes(x=Product,y=`M.Ton Price`,colour=Product))
 p <- p + geom_boxplot() + guides(fill="none") + scale_fill_viridis() + coord_flip()
-p <- p + theme(legend.position = "", plot.title=element_text(hjust=0.5))+labs(x="",y="",title="") + facet_grid(.~REGION,scales="free") 
+p <- p + theme(legend.position = "", plot.title=element_text(hjust=0.5),axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="",y="",title="") + facet_grid(.~REGION,scales="free") 
 p <- ggplotly(p) 
 hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALSE)
 
@@ -78,7 +78,7 @@ Product <- as.factor(Main$Product)
 REGION <- as.factor(Main$REGION)
 
 p <- ggplot(data=Main,aes(x=`M.Ton Price`,y=..count..,colour= Product))
-p <- p + geom_histogram(alpha = 0.2,bins=30) + facet_grid(Product~REGION, scales = "free_y") + 
+p <- p + geom_histogram(alpha = 0.2,bins=30) + facet_grid(Product~REGION) + 
   theme (legend.position = "") + labs(x="",y="") 
 p <- p + scale_fill_viridis_d() 
 p <- ggplotly(p,tooltip=c("y")) 
@@ -100,7 +100,7 @@ hide_legend(p) %>% config(displaylogo = FALSE) %>%  config(displayModeBar = FALS
 
 
 
-### * `Time Series Plot`
+### * `Static Time Series Plot`
 
 ```{r static,echo=FALSE,fig.align='right',fig.width=15,fig.height=8}
 
